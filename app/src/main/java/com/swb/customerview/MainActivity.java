@@ -20,7 +20,9 @@ public class MainActivity extends AppCompatActivity {
          *   findViewById(R.id.shape_btn).setBackground(drawable);
          */
 
-        NumberKeyPad keypad = findViewById(R.id.key_pad);
+
+        /*LinerLayout实现的KeyPad*/
+        /*NumberKeyPad keypad = findViewById(R.id.key_pad);
         keypad.setOnKeyPadListener(new NumberKeyPad.OnKeyPadNumberListener() {
             @Override
             public void onNumberInput(int number) {
@@ -31,9 +33,9 @@ public class MainActivity extends AppCompatActivity {
             public void ondDelete() {
                 Log.d(TAG, "onNumberInput: input--->delete" );
             }
-        });
+        });*/
 
-        startActivity(new Intent(this,FlowActivity.class));
+        //startActivity(new Intent(this,FlowActivity.class));
 
     }
 }

@@ -6,12 +6,13 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.Px;
 
 import com.swb.customerview.R;
 import com.swb.customerview.util.SizeUtils;
@@ -21,10 +22,13 @@ import com.swb.customerview.util.SizeUtils;
  * @date 2021/6/11  10:48
  * @description android 数据小键盘  采用Viewgroup实现
  */
-public class KeyPadExView extends ViewGroup {
+public class KeyPadExView extends ViewGroup implements View.OnClickListener {
+    private static final String TAG = "KeyPadExView";
 
-
-    private static final int KEYSIZE = 12; //0-9 +退格键
+    private static final int KEYSIZE = 11; //0-9 +退格键
+    private static final int KEY_BACK = 10; //10 标识back键 退格
+    private static final int ROW_SIZE = 4;
+    private static final int COLUMN_SIZE = 3;
     private static int NUMBER_SIZE_DEFAULT = 50;
     private int mNumberColor;
     private int mNumberSize;
@@ -42,37 +46,59 @@ public class KeyPadExView extends ViewGroup {
     public KeyPadExView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initAttr(context, attrs);
+        setUpItem();
+    }
 
-
+    private void setUpItem() {
+        removeAllViews();
         for (int i = 0; i < KEYSIZE; i++) {
             TextView numberView = new TextView(getContext());
-            numberView.setText(String.valueOf(i));
+            if (i == KEY_BACK) {
+                numberView.setTag(true);
+                numberView.setText("退格");
+            } else {
+                numberView.setTag(false);
+                numberView.setText(String.valueOf(i));
+            }
             //设置大小
-            numberView.setTextSize(TypedValue.COMPLEX_UNIT_PX,mNumberSize);
+            numberView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mNumberSize);
             //设置颜色
             numberView.setTextColor(mNumberColor);
             //居中显示
             numberView.setGravity(Gravity.CENTER);
+
             //设置背景
+            numberView.setBackground(providerBackground());
+            //设置事件
+            numberView.setOnClickListener(this);
 
-            StateListDrawable numberBgRes = new StateListDrawable();
-            //创建按下时的背景
-            GradientDrawable numberPressBgRes  = new GradientDrawable();
-            numberPressBgRes.setColor(getResources().getColor(R.color.keypad_ex_press));
-            numberPressBgRes.setCornerRadius(SizeUtils.dip2px(5));
-            //设置该背景使用的限制条件
-            numberBgRes.addState(new int[]{android.R.attr.state_pressed}, numberPressBgRes);
-            //创建普通状态下的背景
-            GradientDrawable numberNormalBgRes  = new GradientDrawable();
-            numberNormalBgRes.setCornerRadius(5);
-            numberPressBgRes.setColor(getResources().getColor(R.color.keypad_ex_normal));
-            numberBgRes.addState(new int[]{}, numberPressBgRes);
 
-            numberView.setBackground(numberBgRes);
             addView(numberView);
         }
+    }
 
+    /**
+     * 提供number背景图
+     *
+     * @return
+     */
+    private StateListDrawable providerBackground() {
 
+        StateListDrawable numberBgRes = new StateListDrawable();
+
+        //创建按下时的背景
+        GradientDrawable numberPressBgRes = new GradientDrawable();
+        numberPressBgRes.setColor(getResources().getColor(R.color.keypad_ex_press));
+        numberPressBgRes.setCornerRadius(SizeUtils.dip2px(10));
+        //创建普通状态下的背景
+        GradientDrawable numberNormalBgRes = new GradientDrawable();
+        numberNormalBgRes.setCornerRadius(50);
+        numberNormalBgRes.setColor(getResources().getColor(R.color.keypad_ex_normal));
+        numberBgRes.addState(new int[]{android.R.attr.state_pressed}, numberPressBgRes);
+        //设置该背景使用的限制条件
+        numberBgRes.addState(new int[]{}, numberNormalBgRes);
+
+        return numberBgRes;
     }
 
     private void initAttr(Context context, AttributeSet attrs) {
@@ -93,6 +119,64 @@ public class KeyPadExView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int letf, top, right, bottom, rowIndex, columnIndex;
+
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            boolean isBack = (boolean) child.getTag();
+            rowIndex = i / COLUMN_SIZE ;            //行坐标
+            columnIndex = i % COLUMN_SIZE;      //列坐标
+            letf = columnIndex * child.getMeasuredWidth();
+            top = rowIndex * child.getMeasuredHeight();
+            right = letf + child.getMeasuredWidth();
+            bottom = top + child.getMeasuredHeight();
+            if (isBack) {
+                letf = columnIndex * (child.getMeasuredWidth() / 2);
+            }
+            child.layout(letf, top, right, bottom);
+            Log.d(TAG, "onLayout: rowIndex-->" + rowIndex);
+            Log.d(TAG, "onLayout: columnIndex-->" + columnIndex);
+        }
+
+
+
+    }
+
+    //测量整个的大小  和子View的大小
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        //拿到容器父控件的宽度和高度
+        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+        int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+        //摆放方式为 4*3  的方正排列  退格键盘占2格
+        int rowHeight = parentHeight / ROW_SIZE;
+        int rouWidth = parentWidth / COLUMN_SIZE;
+        //采用精确模式获取子view的宽度，
+        int itemWidth = MeasureSpec.makeMeasureSpec(rouWidth, MeasureSpec.EXACTLY);
+        int itemHeigt = MeasureSpec.makeMeasureSpec(rowHeight, MeasureSpec.EXACTLY);
+        int backWidth = MeasureSpec.makeMeasureSpec(rouWidth * 2, MeasureSpec.EXACTLY);
+        //测试每个子view的长宽
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            child.measure((boolean) child.getTag() ? backWidth : itemWidth, itemHeigt);
+        }
+        //设置自己的长宽
+        setMeasuredDimension(parentWidth, parentHeight);
+
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        if (v instanceof TextView) {
+            boolean isBack = (boolean) v.getTag();
+            if (isBack) {
+                Log.d(TAG, "onClick: ---点击了back键 ");
+            } else {
+                Log.d(TAG, "onClick: ---点击了数字键---> " + ((TextView) v).getText());
+            }
+        }
 
     }
 }

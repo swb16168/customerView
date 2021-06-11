@@ -33,12 +33,18 @@
         app:step="5"
         app:inputDefault="1"/>-->
 
-    <com.swb.customerview.view.NumberKeyPad
+    <!--继承LinerLayout布局实现KeyPad-->
+    <!--<com.swb.customerview.view.NumberKeyPad
         xmlns:num="http://schemas.android.com/apk/res-auto"
         android:id="@+id/key_pad"
         android:layout_width="400dp"
         android:layout_height="300dp"
-        />
+        />-->
 
+    <!-- 采用继承自 ViewGroup实现KeyPad 效果-->
+    <com.swb.customerview.view.KeyPadExView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mainColor"/>
 
 </LinearLayout>

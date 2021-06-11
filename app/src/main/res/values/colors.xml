@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+
+    <color name="inputnumber">#cfcfcf</color>
+
+    <color name="colorWhite">#ffffff</color>
+    <color name="mainColor">#FD7541</color>
+    <color name="mainDeepColor">#974726</color>
+
+    <color name="flowTextGrey">#888585</color>
+
+    <color name="keypad_ex_normal">#BEBEBE</color>
+    <color name="keypad_ex_press">#888585</color>
+
+
+
+</resources>

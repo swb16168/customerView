@@ -1,0 +1,6 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.swb.looperpagerview" >
+
+
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 用于管理监听网络状态的变化 -->
+</manifest>

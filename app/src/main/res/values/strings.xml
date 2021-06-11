@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">自定义控件</string>
+    <string name="get_verifyt_text">获取验证码</string>
+</resources>

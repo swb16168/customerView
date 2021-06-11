@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <!--        selector 和 shape的基本使用-->
+    <!-- <Button
+        android:id="@+id/shape_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:text="测试shape"
+         />
+    <Button
+        android:id="@+id/shape_btn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:text="测试shape"
+        android:background="@drawable/test_selector"/>-->
+
+
+    <!--<com.swb.customerview.view.InputNumberView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:max="30"
+        app:min="-30"
+        app:step="5"
+        app:inputDefault="1"/>-->
+
+    <com.swb.customerview.view.NumberKeyPad
+        xmlns:num="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/key_pad"
+        android:layout_width="400dp"
+        android:layout_height="300dp"
+        />
+
+
+</LinearLayout>

@@ -27,6 +27,8 @@
     </declare-styleable>
 
     <declare-styleable name="KeyPadExView">
+
+        <attr name="itemMargin" format="dimension" />
         <attr name="numberColor" format="color" />
         <attr name="numberSize" format="dimension" />
         <attr name="itemPressColor" format="color" />
@@ -34,4 +36,11 @@
     </declare-styleable>
 
 
+    <declare-styleable name="SlideMenuView">
+        <attr name="function" format="flags">
+            <flag name="delete" value="0x50"/>
+            <flag name="top" value="0x80"/>
+            <flag name="read" value="0x50"/>
+        </attr>
+    </declare-styleable>
 </resources>

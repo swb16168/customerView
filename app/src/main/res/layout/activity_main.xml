@@ -43,8 +43,11 @@
 
     <!-- 采用继承自 ViewGroup实现KeyPad 效果-->
     <com.swb.customerview.view.KeyPadExView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/keypad_ex"
+        android:layout_width="300dp"
+        android:layout_height="400dp"
+        app:itemMargin="5dp"
+        android:padding="5dp"
         android:background="@color/mainColor"/>
 
 </LinearLayout>

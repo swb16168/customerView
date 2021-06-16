@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+
+    <TextView
+        android:id="@+id/slide_fun_top"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:text="置顶"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:background="@color/slide_top_color"/>
+    <TextView
+        android:id="@+id/slide_fun_read"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:text="标为已读"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:background="@color/slide_read_color"/>
+    <TextView
+        android:id="@+id/slide_fun_delete"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:text="删除"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:background="@color/slide_delete_color"/>
+</LinearLayout>

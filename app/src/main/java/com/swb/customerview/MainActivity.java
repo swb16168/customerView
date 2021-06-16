@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
+import com.swb.customerview.view.KeyPadExView;
 import com.swb.customerview.view.NumberKeyPad;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,6 +16,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        KeyPadExView viewById = findViewById(R.id.keypad_ex);
+        viewById.setKeyPadClickListener(new KeyPadExView.KeyPadClickListener() {
+            @Override
+            public void onItemClick(int keyValue) {
+                Log.d(TAG, "onItemClick: keyValue--->" + keyValue);
+            }
+
+            @Override
+            public void onBackClick() {
+                Log.d(TAG, "onBackClick: 清除。。。");
+            }
+        });
         /**
          * 代码设置 背景图
          *   Drawable drawable = getResources().getDrawable(R.drawable.shape_btn, null);
@@ -35,7 +50,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
+        //流式布局
         //startActivity(new Intent(this,FlowActivity.class));
 
+        //侧滑view
+        startActivity(new Intent(this,SlideMenuActivity.class));
     }
 }

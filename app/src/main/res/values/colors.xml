@@ -17,5 +17,10 @@
     <color name="keypad_ex_press">#888585</color>
 
 
+    <color name="slide_delete_color">#ff0000</color>
+    <color name="slide_read_color">@color/mainColor</color>
+    <color name="slide_top_color">#9C9C9C</color>
+
+
 
 </resources>

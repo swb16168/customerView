@@ -29,11 +29,18 @@ public class KeyPadExView extends ViewGroup implements View.OnClickListener {
     private static final int KEY_BACK = 10; //10 标识back键 退格
     private static final int ROW_SIZE = 4;
     private static final int COLUMN_SIZE = 3;
+    private static final int ITEM_MARGIN_DEFAULT = 1;
     private static int NUMBER_SIZE_DEFAULT = 50;
     private int mNumberColor;
     private int mNumberSize;
     private int mNumberBgNormalColor;
     private int mNumberBgPressColor;
+    private int mItemMargin;
+    private int mPaddingBottom;
+    private int mPaddingTop;
+    private int mPaddingLeft;
+    private int mPaddingRight;
+    private KeyPadClickListener mClickListener =null;
 
     public KeyPadExView(Context context) {
         this(context, null);
@@ -97,23 +104,24 @@ public class KeyPadExView extends ViewGroup implements View.OnClickListener {
         numberBgRes.addState(new int[]{android.R.attr.state_pressed}, numberPressBgRes);
         //设置该背景使用的限制条件
         numberBgRes.addState(new int[]{}, numberNormalBgRes);
-
         return numberBgRes;
     }
 
     private void initAttr(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyPadExView);
 
+
+        //间距
+        mItemMargin = a.getDimensionPixelSize(R.styleable.KeyPadExView_itemMargin, ITEM_MARGIN_DEFAULT);
+        Log.d(TAG, "initAttr: mItemMargin--->" + mItemMargin);
         //小键盘数字的颜色，默认橙色
         mNumberColor = a.getColor(R.styleable.KeyPadExView_numberColor, context.getResources().getColor(R.color.mainColor));
         //数字大小、默认16sp   sp会根据不同设备进行适配，
-
         mNumberSize = a.getDimensionPixelSize(R.styleable.KeyPadExView_numberSize, NUMBER_SIZE_DEFAULT);
         //数字键默认背景颜色
         mNumberBgNormalColor = a.getColor(R.styleable.KeyPadExView_itemNormalColor, context.getResources().getColor(R.color.keypad_ex_normal));
         //数字键按下时背景颜色
         mNumberBgPressColor = a.getColor(R.styleable.KeyPadExView_itemPressColor, context.getResources().getColor(R.color.keypad_ex_press));
-
         a.recycle();
     }
 
@@ -121,23 +129,42 @@ public class KeyPadExView extends ViewGroup implements View.OnClickListener {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int letf, top, right, bottom, rowIndex, columnIndex;
 
-        for (int i = 0; i < getChildCount(); i++) {
+        /*for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             boolean isBack = (boolean) child.getTag();
-            rowIndex = i / COLUMN_SIZE ;            //行坐标
+            rowIndex = i / COLUMN_SIZE;            //行坐标
             columnIndex = i % COLUMN_SIZE;      //列坐标
-            letf = columnIndex * child.getMeasuredWidth();
-            top = rowIndex * child.getMeasuredHeight();
-            right = letf + child.getMeasuredWidth();
-            bottom = top + child.getMeasuredHeight();
+            letf = columnIndex * child.getMeasuredWidth() + (mItemMargin * (columnIndex + 1)) + mPaddingLeft;
+            top = rowIndex * child.getMeasuredHeight() + (mItemMargin * (rowIndex + 1)) + mPaddingTop;
+            right = letf + child.getMeasuredWidth() - (mItemMargin * (columnIndex + 1)) - mPaddingRight;
+            bottom = top + child.getMeasuredHeight() - (mItemMargin * (columnIndex + 1));
             if (isBack) {
-                letf = columnIndex * (child.getMeasuredWidth() / 2);
+                letf = columnIndex * (child.getMeasuredWidth() / 2) + (mItemMargin * (columnIndex + 1)) + mPaddingLeft;
+                right = letf + child.getMeasuredWidth() - (mItemMargin * (columnIndex + 1)) - mPaddingRight;
+
             }
             child.layout(letf, top, right, bottom);
             Log.d(TAG, "onLayout: rowIndex-->" + rowIndex);
             Log.d(TAG, "onLayout: columnIndex-->" + columnIndex);
-        }
+        }*/
 
+        letf = mItemMargin + mPaddingLeft;
+        for (int i = 0; i < getChildCount(); i++) {
+            rowIndex = i / COLUMN_SIZE;
+            columnIndex = i % COLUMN_SIZE;
+            if(columnIndex == 0){
+                letf = mItemMargin + mPaddingLeft;
+            }
+            View item = getChildAt(i);
+            top = rowIndex * item.getMeasuredHeight() + mItemMargin *(rowIndex + 1) + mPaddingTop ;
+            right = letf + item.getMeasuredWidth()   ;
+            bottom = top + item.getMeasuredHeight();
+            item.layout(letf,top,right,bottom);
+            letf += item.getMeasuredWidth() +mItemMargin;
+
+            Log.d(TAG, "onLayout: i--->" + i);
+            Log.d(TAG, "onLayout: bottom--->" + bottom);
+        }
 
 
     }
@@ -146,16 +173,22 @@ public class KeyPadExView extends ViewGroup implements View.OnClickListener {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        mPaddingBottom = getPaddingBottom();
+        mPaddingLeft = getPaddingLeft();
+        mPaddingRight = getPaddingRight();
+        mPaddingTop = getPaddingTop();
         //拿到容器父控件的宽度和高度
-        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-        int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+        int parentHeight = MeasureSpec.getSize(heightMeasureSpec  ) ;
+        int parentWidth = MeasureSpec.getSize(widthMeasureSpec ) ;
         //摆放方式为 4*3  的方正排列  退格键盘占2格
-        int rowHeight = parentHeight / ROW_SIZE;
-        int rouWidth = parentWidth / COLUMN_SIZE;
+        int columnWidth = (parentWidth - (COLUMN_SIZE + 1) * mItemMargin -  (mPaddingTop + mPaddingBottom))  / COLUMN_SIZE;
+        int rowHeight = (parentHeight - (ROW_SIZE + 1) * mItemMargin  - ( mPaddingLeft + mPaddingRight)) / ROW_SIZE;
+
         //采用精确模式获取子view的宽度，
-        int itemWidth = MeasureSpec.makeMeasureSpec(rouWidth, MeasureSpec.EXACTLY);
+        int itemWidth = MeasureSpec.makeMeasureSpec(columnWidth, MeasureSpec.EXACTLY);
         int itemHeigt = MeasureSpec.makeMeasureSpec(rowHeight, MeasureSpec.EXACTLY);
-        int backWidth = MeasureSpec.makeMeasureSpec(rouWidth * 2, MeasureSpec.EXACTLY);
+        int backWidth = MeasureSpec.makeMeasureSpec(columnWidth * 2, MeasureSpec.EXACTLY);
         //测试每个子view的长宽
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
@@ -167,15 +200,31 @@ public class KeyPadExView extends ViewGroup implements View.OnClickListener {
     }
 
 
+    public void setKeyPadClickListener(KeyPadClickListener listener){
+        this.mClickListener = listener;
+    }
+
+    public interface KeyPadClickListener{
+        void onItemClick(int keyValue);
+
+        void onBackClick();
+    }
+
     @Override
     public void onClick(View v) {
         if (v instanceof TextView) {
             boolean isBack = (boolean) v.getTag();
-            if (isBack) {
-                Log.d(TAG, "onClick: ---点击了back键 ");
-            } else {
-                Log.d(TAG, "onClick: ---点击了数字键---> " + ((TextView) v).getText());
+            if (mClickListener != null) {
+                if (isBack) {
+                    //Log.d(TAG, "onClick: ---点击了back键 ");
+                    mClickListener.onBackClick();
+                } else {
+                    //Log.d(TAG, "onClick: ---点击了数字键---> " + ((TextView) v).getText());
+                    mClickListener.onItemClick(Integer.parseInt(((TextView) v).getText().toString()));
+
+                }
             }
+
         }
 
     }

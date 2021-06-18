@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         //startActivity(new Intent(this,FlowActivity.class));
 
         //侧滑view
-        startActivity(new Intent(this,SlideMenuActivity.class));
+        //startActivity(new Intent(this,SlideMenuActivity.class));
+
+        //表盘 自定义View
+        startActivity(new Intent(this,WatchActivity.class));
     }
 }

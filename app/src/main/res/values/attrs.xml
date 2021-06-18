@@ -43,4 +43,13 @@
             <flag name="read" value="0x50"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="WatchFaceView">
+        <attr name="secondColor" format="color" />
+        <attr name="hourColor" format="color" />
+        <attr name="minuteColor" format="color" />
+        <attr name="scaleColor" format="color" />
+        <attr name="faceBg" format="reference" />
+        <attr name="scaleShow" format="boolean" />
+    </declare-styleable>
 </resources>

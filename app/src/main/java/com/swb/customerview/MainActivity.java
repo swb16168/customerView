@@ -57,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
         //startActivity(new Intent(this,SlideMenuActivity.class));
 
         //表盘 自定义View
-        startActivity(new Intent(this,WatchActivity.class));
+       // startActivity(new Intent(this,WatchActivity.class));
+
+        //自定义View 跑马灯效果
+        startActivity(new Intent(this,MarqueeActivity.class));
     }
 }
